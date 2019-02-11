@@ -13,10 +13,11 @@ Unique your images.
 Download or clone it into your folder that restore images.
 
 ```go
-go run main.go
+go build -o main.exe
 ```
 
-Then the script will scan its current folder and then duplicate uniqued files with the highest quality to ./tmp
+Run main.exe, Then the script will scan its current folder and then duplicate uniqued files with the highest quality to ./tmp
+Or just run ./bin/uniqueee.exe
 
 ## ChangeLog
 
@@ -26,4 +27,5 @@ Expect for unique files, support nothing featured.Just a practice on the Go lang
 
 ## Todo
 
-Support $\text{dhash}$ and $\text{phash}$.
+Support SIFT.
+Use kd tree to maintain hamming distance.

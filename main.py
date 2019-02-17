@@ -1,7 +1,8 @@
 # By kririae
 from PIL import Image
 import imagehash
-import os, shutil
+import os
+import shutil
 import math
 
 PATH = ""
@@ -13,10 +14,13 @@ class DisjointSet:
     if type(n) != int:
       raise Exception('Input type error!')
     self._fa = list(range(0, n + 1))
+
   def find(self, x: 'int') -> 'int':
     return x if x == self._fa[x] else self.find(self._fa[x])
+
   def union(self, x: 'int', y: 'int') -> 'void':
     self._fa[self.find(x)] = self.find(y)
+
 
 class Img:
   def __init__(self, name):
@@ -25,7 +29,9 @@ class Img:
     self.hash = imagehash.dhash(img)
     self.size = img.size[0] * img.size[1]
     if self.name.endswith('.png'):
-      self.size += 1 # correction, Guaranteed that under the same quality, png first.
+      # correction, Guaranteed that under the same quality, png first.
+      self.size += 1
+
 
 def extractIntegers(s: 'str') -> 'list':
   if type(s) != str:
@@ -40,10 +46,12 @@ def extractIntegers(s: 'str') -> 'list':
       val = 0
   return ret
 
+
 def formatName(img: 'Img') -> 'str':
   s = img.name
   # a = lambda x: ''.join(x.split('.')[:-1]) + '.jpg'
-  end = lambda x: x.split('.')[-1]
+
+  def end(x): return x.split('.')[-1]
   if 'Konachan.com' in s:
     return f'Konachan.com-{extractIntegers(s)[0]}.{end(s)}'
   if '_p0' in s:
@@ -52,19 +60,22 @@ def formatName(img: 'Img') -> 'str':
     return f'yande.re-{str(extractIntegers(s)[0])}.{end(s)}'
   return f'{str(img.hash)}.{end(s)}'
 
+
 def isImage(x: 'string') -> 'bool':
   if type(x) != str:
     raise Exception('Input type error!')
   return x.endswith('.jpg') or x.endswith('.png')
+
 
 def transformImage(_from: 'str', _to: 'str') -> 'void':
   # reduce its quality...
   if type(_from) != str or type(_to) != str:
     raise Exception('Input type error!')
   img = Image.open(_from)
-  img.save(to)
+  img.save(_to)
 
-if __name__ == '__main__':
+
+def main():
   _dir = list(filter(isImage, os.listdir(PATH)))
   imgs = []
   for i in range(0, len(_dir)):
@@ -73,6 +84,7 @@ if __name__ == '__main__':
   for i in range(0, len(_dir)):
     for j in range(i + 1, len(_dir)):
       if abs(imgs[i].hash - imgs[j].hash) <= SIM:
+        # Use disjoint set to maintain repeated images.
         unq.union(i + 1, j + 1)
 
   ref = {}
@@ -97,4 +109,7 @@ if __name__ == '__main__':
     _name = formatName(hi_quality_img)
     to = f'{PATH}\\filted\\{_name}'
     shutil.copyfile(fr, to)
-    # transformImage(fr, to)
+
+
+if __name__ == '__main__':
+  main()
